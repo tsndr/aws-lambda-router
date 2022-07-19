@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": ".",
+        "target": "es2020",
+        "declaration": true,
+        "strict": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "preserveConstEnums": true,
+        "module":"commonjs",
+        "moduleResolution":"node",
+        "esModuleInterop": true, 
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+    },
+    "exclude": ["node_modules", "**/*.test.ts", "index.js", "index.d.ts"]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@tsndr/aws-lambda-router",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsndr/aws-lambda-router.git"
+  },
+  "keywords": [
+    "aws",
+    "aws-lambda",
+    "aws-lambda-router",
+    "express",
+    "expressjs",
+    "framework",
+    "middleware",
+    "router",
+    "routing",
+    "lambda"
+  ],
+  "author": "Tobias Schneider",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsndr/aws-lambda-router/issues"
+  },
+  "homepage": "https://github.com/tsndr/aws-lambda-router#readme",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.101",
+    "@types/node": "^18.0.6",
+    "typescript": "^4.7.4"
+  }
+}
