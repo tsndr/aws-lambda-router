@@ -1,30 +1,4 @@
-import { APIGatewayEventRequestContextV2, APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'aws-lambda'
-
-/**
- * Handler Event
- * 
- * @typedef HandlerEvent
- * @augments APIGatewayProxyEventV2
- */
-export interface HandlerEvent extends APIGatewayProxyEventV2 {
-    body: string | any
-}
-
-/**
- * Handler Context
- * 
- * @typedef HandlerContext
- * @augments APIGatewayEventRequestContextV2
- */
-export interface HandlerContext extends APIGatewayEventRequestContextV2 {}
-
-/**
- * Handler Response
- * 
- * @typedef HandlerResponse
- * @augments APIGatewayProxyResultV2
- */
-export type HandlerResponse = APIGatewayProxyResultV2
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'aws-lambda'
 
 /**
  * Route Object
@@ -32,38 +6,28 @@ export type HandlerResponse = APIGatewayProxyResultV2
  * @typedef Route
  * @property {string} method HTTP request method
  * @property {string} url URL String
- * @property {RouterHandler[]} handlers Array of handler functions
+ * @property {RouterHandler<T>[]} handlers Array of handler functions
  */
-export interface Route {
+export interface Route<T> {
     method: string
     url: string
-    handlers: RouterHandler[]
+    handlers: RouterHandler<T>[]
 }
 
 /**
  * Router Context
  * 
  * @typedef RouterContext
- * @property {RouterEnv>} env Environment
+ * @property {any} env Environment
  * @property {RouterRequest} req Request Object
  * @property {RouterResponse} res Response Object
  * @property {RouterNext} next Next Handler
  */
-export interface RouterContext {
-    env: RouterEnv
+export type RouterContext<T> = T & {
+    env: any
     req: RouterRequest
     res: RouterResponse
     next: RouterNext
-    [key: string]: any
-}
-
-/**
- * Router Env
- * 
- * @typedef RouterEnv
- */
-export interface RouterEnv {
-    [key: string]: string
 }
 
 /**
@@ -152,12 +116,12 @@ export interface RouterNext {
 /**
  * Handler Function
  * 
- * @callback RouterHandler
+ * @callback RouterHandler<T>
  * @param {RouterContext} ctx
  * @returns {Promise<void> | void}
  */
-export interface RouterHandler {
-    (ctx: RouterContext): Promise<void> | void
+export interface RouterHandler<T> {
+    (ctx: RouterContext<T>): Promise<void> | void
 }
 
 /**
@@ -184,7 +148,7 @@ export interface RouterCorsConfig {
  * @public
  * @class
  */
-export default class Router {
+export default class Router<T = any> {
 
     /**
      * Router Array
@@ -192,15 +156,15 @@ export default class Router {
      * @protected
      * @type {Route[]}
      */
-    protected routes: Route[] = []
+    protected routes: Route<T>[] = []
 
     /**
      * Global Handlers
      * 
      * @proteced
-     * @type {RouterHandler[]}
+     * @type {RouterHandler<T>[]}
      */
-    protected globalHandlers: RouterHandler[] = []
+    protected globalHandlers: RouterHandler<T>[] = []
 
     /**
      * Debug Mode
@@ -227,10 +191,10 @@ export default class Router {
     /**
      * Register global handlers
      * 
-     * @param {RouterHandler[]} handlers
+     * @param {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public use(...handlers: RouterHandler[]): Router {
+    public use(...handlers: RouterHandler<T>[]): Router<T> {
         for (let handler of handlers) {
             this.globalHandlers.push(handler)
         }
@@ -241,10 +205,10 @@ export default class Router {
      * Register CONNECT route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public connect(url: string, ...handlers: RouterHandler[]): Router {
+    public connect(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('CONNECT', url, handlers)
     }
 
@@ -252,10 +216,10 @@ export default class Router {
      * Register DELETE route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public delete(url: string, ...handlers: RouterHandler[]): Router {
+    public delete(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('DELETE', url, handlers)
     }
 
@@ -263,10 +227,10 @@ export default class Router {
      * Register GET route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public get(url: string, ...handlers: RouterHandler[]): Router {
+    public get(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('GET', url, handlers)
     }
 
@@ -274,10 +238,10 @@ export default class Router {
      * Register HEAD route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public head(url: string, ...handlers: RouterHandler[]): Router {
+    public head(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('HEAD', url, handlers)
     }
 
@@ -285,10 +249,10 @@ export default class Router {
      * Register OPTIONS route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public options(url: string, ...handlers: RouterHandler[]): Router {
+    public options(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('OPTIONS', url, handlers)
     }
 
@@ -296,10 +260,10 @@ export default class Router {
      * Register PATCH route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public patch(url: string, ...handlers: RouterHandler[]): Router {
+    public patch(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('PATCH', url, handlers)
     }
 
@@ -307,10 +271,10 @@ export default class Router {
      * Register POST route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public post(url: string, ...handlers: RouterHandler[]): Router {
+    public post(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('POST', url, handlers)
     }
 
@@ -318,10 +282,10 @@ export default class Router {
      * Register PUT route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public put(url: string, ...handlers: RouterHandler[]): Router {
+    public put(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('PUT', url, handlers)
     }
 
@@ -329,10 +293,10 @@ export default class Router {
      * Register TRACE route
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public trace(url: string, ...handlers: RouterHandler[]): Router {
+    public trace(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('TRACE', url, handlers)
     }
 
@@ -340,10 +304,10 @@ export default class Router {
      * Register route, ignoring method
      * 
      * @param {string} url 
-     * @param  {RouterHandler[]} handlers 
+     * @param  {RouterHandler<T>[]} handlers
      * @returns {Router}
      */
-    public any(url: string, ...handlers: RouterHandler[]): Router {
+    public any(url: string, ...handlers: RouterHandler<T>[]): Router<T> {
         return this.register('*', url, handlers)
     }
 
@@ -353,7 +317,7 @@ export default class Router {
      * @param {boolean} [state=true] Whether to turn on or off debug mode (default: true)
      * @returns {Router}
      */
-    public debug(state: boolean = true): Router {
+    public debug(state: boolean = true): Router<T> {
         this.debugMode = state
         return this
     }
@@ -364,7 +328,7 @@ export default class Router {
      * @param {RouterCorsConfig} [config]
      * @returns {Router}
      */
-    public cors(config?: RouterCorsConfig): Router {
+    public cors(config?: RouterCorsConfig): Router<T> {
         this.corsConfig = {
             allowOrigin: config?.allowOrigin || '*',
             allowMethods: config?.allowMethods || '*',
@@ -381,10 +345,10 @@ export default class Router {
      * @private
      * @param {string} method HTTP request method
      * @param {string} url URL String
-     * @param {RouterHandler[]} handlers Arrar of handler functions
+     * @param {RouterHandler<T>[]} handlers Arrar of handler functions
      * @returns {Router}
      */
-    private register(method: string, url: string, handlers: RouterHandler[]): Router {
+    private register(method: string, url: string, handlers: RouterHandler<T>[]): Router<T> {
         this.routes.push({
             method,
             url,
@@ -400,7 +364,7 @@ export default class Router {
      * @param {Request} request
      * @returns {Route | undefined}
      */
-    private getRoute(request: RouterRequest): Route | undefined {
+    private getRoute(request: RouterRequest): Route<T> | undefined {
         const url = new URL(request.url)
         const pathArr = url.pathname.split('/').filter(i => i)
         return this.routes.find(r => {
@@ -429,12 +393,12 @@ export default class Router {
      * 
      * @param {APIGatewayProxyEventV2} event
      * @param {Context} context
-     * @param {any} [extend={}]
+     * @param {RouterExtend} [extend={}]
      * @returns {Promise<APIGatewayProxyResultV2>}
      */
-    public async handle(event: APIGatewayProxyEventV2, context: Context, extend: any = {}): Promise<APIGatewayProxyResultV2> {
+    public async handle<RouterExtend = any>(event: APIGatewayProxyEventV2, context: Context, extend?: RouterExtend): Promise<APIGatewayProxyResultV2> {
         try {
-            const env: RouterEnv = process.env as RouterEnv
+            const env: any = process.env
             const req: RouterRequest = {
                 method: event.requestContext.http.method,
                 headers: event.headers as RouterRequestHeaders,
@@ -476,14 +440,16 @@ export default class Router {
                 res.headers['Access-Control-Allow-Headers'] = this.corsConfig.allowHeaders
                 res.headers['Access-Control-Max-Age'] = this.corsConfig.maxAge.toString()
             }
-            const handlers = [...this.globalHandlers, ...route.handlers]
-            let prevIndex = -1
+            const handlers: RouterHandler<T>[] = [...this.globalHandlers, ...route.handlers]
+            let prevIndex: number = -1
             const runner = async (index: number) => {
                 if (index === prevIndex)
                     throw new Error('next() called multiple times')
                 prevIndex = index
-                if (typeof handlers[index] === 'function')
-                    await handlers[index]({ ...extend, env, req, res, next: async () => await runner(index + 1) })
+                if (typeof handlers[index] !== 'function')
+		    throw new Error('Handler is not a function!')
+		const ctx: RouterContext<T> = { ...extend, env, req, res, next: async () => await runner(index + 1) } as RouterContext<T>
+                await handlers[index](ctx)
             }
             await runner(0)
             if (typeof res.body === 'object') {
