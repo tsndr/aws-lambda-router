@@ -428,8 +428,6 @@ export default class Router<T = any> {
                     }
                 }
             }
-            if (this.debugMode)
-                console.log('REQUEST', req)
             const route = this.getRoute(req)
             if (!route)
                 return { statusCode: 404, body: this.debugMode ? 'Route not found!' : undefined }
@@ -460,8 +458,6 @@ export default class Router<T = any> {
             if (res.raw)
                 return res.raw
             res.status = res.status || (res.body ? 200 : 204)
-            if (this.debugMode)
-                console.log('RESPONSE', res)
             return {
                 statusCode: res.status,
                 headers: res.headers,
