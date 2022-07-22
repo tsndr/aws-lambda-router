@@ -1,4 +1,4 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, APIGatewayProxyStructuredResultV2, Context } from 'aws-lambda'
 
 /**
  * Route Object
@@ -48,6 +48,7 @@ export interface RouterRequest {
     query: RouterRequestQuery
     headers: RouterRequestHeaders
     body: string | any
+    raw?: APIGatewayProxyStructuredResultV2
     [key: string]: any
 }
 
@@ -394,9 +395,9 @@ export default class Router<T = any> {
      * @param {APIGatewayProxyEventV2} event
      * @param {Context} context
      * @param {RouterExtend} [extend={}]
-     * @returns {Promise<APIGatewayProxyResultV2>}
+     * @returns {Promise<APIGatewayProxyStructuredResultV2>}
      */
-    public async handle<RouterExtend = any>(event: APIGatewayProxyEventV2, context: Context, extend?: RouterExtend): Promise<APIGatewayProxyResultV2> {
+    public async handle<RouterExtend = any>(event: APIGatewayProxyEventV2, context: Context, extend?: RouterExtend): Promise<APIGatewayProxyStructuredResultV2> {
         try {
             const env: any = process.env
             const req: RouterRequest = {
