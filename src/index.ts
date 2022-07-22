@@ -86,13 +86,13 @@ export interface RouterRequestHeaders {
  * @property {RouterResponseHeaders} headers Response headers object
  * @property {number} [status=204] Return status code (default: `204`)
  * @property {any} [body] Either an `object` (will be converted to JSON) or a string
- * @property {APIGatewayProxyResultV2} [raw] A response object that is to be returned, this will void all other res properties and return this as is.
+ * @property {APIGatewayProxyStructuredResultV2} [raw] A response object that is to be returned, this will void all other res properties and return this as is.
  */
 export interface RouterResponse {
     headers: RouterResponseHeaders
     status?: number
     body?: any
-    raw?: APIGatewayProxyResultV2
+    raw?: APIGatewayProxyStructuredResultV2
 }
 
 /**
