@@ -379,12 +379,12 @@ export default class Router<T = any> {
                 if (routeArr[i][0] === ':')
                     params[routeArr[i].substring(1)] = pathArr[i]
             }
-            request.params = params
+            request.params = { ...request.params, ...params }
             const query: any = {}
             for (const [k, v] of url.searchParams.entries()) {
                 query[k] = v
             }
-            request.query = query
+            request.query = { ...request.query, ...query }
             return true
         }) || this.routes.find(r => r.url === '*' && [request.method, '*'].includes(r.method))
     }
@@ -403,7 +403,7 @@ export default class Router<T = any> {
             const req: RouterRequest = {
                 method: event.requestContext.http.method,
                 headers: event.headers as RouterRequestHeaders,
-                url: `https://${event.requestContext.domainName}${event.rawPath}`,
+                url: `https://${event.requestContext.domainName}${event.rawPath}${event.rawQueryString ? `?${event.rawQueryString}` : ''}`,
                 params: (event.pathParameters || {}) as RouterRequestParams,
                 query: (event.queryStringParameters || {}) as RouterRequestQuery,
                 body: event.body,
