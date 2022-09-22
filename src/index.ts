@@ -1,4 +1,4 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2, APIGatewayProxyStructuredResultV2, Context } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2, Context } from 'aws-lambda'
 
 /**
  * Route Object
@@ -446,8 +446,8 @@ export default class Router<T = any> {
                     throw new Error('next() called multiple times')
                 prevIndex = index
                 if (typeof handlers[index] !== 'function')
-		    throw new Error('Handler is not a function!')
-		const ctx: RouterContext<T> = { ...extend, env, req, res, next: async () => await runner(index + 1) } as RouterContext<T>
+                    throw new Error('Handler is not a function!')
+                const ctx: RouterContext<T> = { ...extend, env, req, res, next: async () => await runner(index + 1) } as RouterContext<T>
                 await handlers[index](ctx)
             }
             await runner(0)
